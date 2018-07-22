@@ -38,9 +38,7 @@ io.on('connection', (socket) => {
         //broadcast the message
         io.emit('newMessage', generateMessage(newMessage.from, newMessage.text));
 
-        callback({
-            message: 'this is from the server'
-        });
+        callback();
 
     });
 
