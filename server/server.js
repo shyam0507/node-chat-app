@@ -70,17 +70,23 @@ io.on('connection', (socket) => {
 
 
     socket.on('createMessage', (newMessage, callback) => {
-        console.log("New message", newMessage);
+        var user = users.getUser(socket.id);
 
-        //broadcast the message
-        io.emit('newMessage', generateMessage(newMessage.from, newMessage.text));
-
-        callback();
+        if (user && isRealString(newMessage.text)) {
+            //broadcast the message
+            io.to(user.room).emit('newMessage', generateMessage(user.name, newMessage.text));
+            callback();
+        }
 
     });
 
     socket.on('createLocationMessage', (coords) => {
-        io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
+        var user = users.getUser(socket.id);
+
+        if (user) {
+            //broadcast the message
+            io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));
+        }
     });
 });
 
